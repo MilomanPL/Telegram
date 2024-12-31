@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Loading</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #code-animation {
+            font-size: 0.7em;
+            line-height: 1.3em;
+            white-space: pre-wrap;
+            text-align: left;
+            width: 95%;
+            max-height: 70%;
+            overflow-y: auto;
+            color: white;
+        }
+        #progress-percentage {
+            font-size: 1.2em;
+            color: white;
+            margin-bottom: 10px;
+            display: none;
+        }
+        #progress-bar-container {
+            width: 80%;
+            height: 20px;
+            background-color: #fff;
+            border: 2px solid #000;
+            margin-top: 20px;
+            position: relative;
+            display: none;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #000;
+            width: 0;
+            transition: width 0.1s linear;
+        }
+        #error-message {
+            font-size: 1.5em;
+            color: red;
+            display: none;
+        }
+    </style>
+    <script>
+        // Проверка на повторное использование ссылки
+        function checkLinkUsage() {
+            const linkUsedKey = "linkUsed"; // Ключ для localStorage
+
+            // Если ссылка уже использовалась, показываем сообщение и закрываем вкладку
+            if (localStorage.getItem(linkUsedKey) === "true") {
+                document.body.innerHTML = "<div id='error-message'>This link has already been used.</div>";
+                setTimeout(() => window.close(), 3000);
+                return false;
+            }
+
+            // Устанавливаем флаг, что ссылка используется впервые
+            localStorage.setItem(linkUsedKey, "true");
+            return true;
+        }
+
+        // Пролистывание вниз
+        function scrollToBottom() {
+            const codeElement = document.getElementById("code-animation");
+            codeElement.scrollTop = codeElement.scrollHeight;
+        }
+
+        // Анимация строк кода
+        function runCodeAnimation(callback) {
+            const codeElement = document.getElementById("code-animation");
+            let lineIndex = 0;
+            const totalDuration = 5000; // Всего 5 секунд на выполнение кода
+            const lineDuration = totalDuration / codeLines.length; // Время на одну строку
+
+            function addNextLine() {
+                if (lineIndex < codeLines.length) {
+                    const lineText = codeLines[lineIndex];
+                    let span = document.createElement("span");
+                    span.textContent = lineText + "\n";
+                    span.style.color = lineIndex % 2 === 0 ? "white" : "#888";
+                    codeElement.appendChild(span);
+                    lineIndex++;
+                    scrollToBottom(); // Пролистывание вниз
+                    setTimeout(addNextLine, lineDuration); // Выполнение строки
+                } else {
+                    callback(); // Переход к прогресс-бару
+                }
+            }
+
+            addNextLine();
+        }
+
+        // Анимация прогресс-бара
+        function runProgressBar() {
+            const progressBarContainer = document.getElementById("progress-bar-container");
+            const progressBar = document.getElementById("progress-bar");
+            const progressPercentage = document.getElementById("progress-percentage");
+
+            progressBarContainer.style.display = "block";
+            progressPercentage.style.display = "block";
+
+            let progress = 0;
+
+            function updateProgressBar() {
+                if (progress < 100) {
+                    progress += 1;
+                    progressBar.style.width = progress + "%";
+                    progressPercentage.textContent = `Loading... ${progress}%`;
+                    setTimeout(updateProgressBar, 50); // Скорость загрузки
+                } else {
+                    // Закрываем вкладку после завершения прогресса
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                }
+            }
+
+            updateProgressBar();
+        }
+
+        // Основная функция загрузки
+        window.onload = function () {
+            if (checkLinkUsage()) { // Проверяем, была ли ссылка использована
+                runCodeAnimation(() => {
+                    runProgressBar();
+                });
+            }
+        };
+
+        // Генерация массива строк
+        const codeLines = Array.from(new Set([
+            "Initializing system protocols...",
+            "Loading essential services...",
+            "Establishing secure connection...",
+            "Verifying network integrity...",
+            "Performing hardware checks...",
+            "Clearing system cache...",
+            "Loading operating system components...",
+            "Initializing device drivers...",
+            "Running diagnostic tests...",
+            "Synchronizing time with server...",
+            "Establishing cloud link...",
+            "Scanning system for vulnerabilities...",
+            "Decrypting sensitive data...",
+            "Verifying authentication keys...",
+            "Configuring network interfaces...",
+            "Loading user preferences...",
+            "Checking system logs...",
+            "Establishing backup network...",
+            "Verifying firewall configuration...",
+            "Checking for firmware updates...",
+            "Performing memory diagnostics...",
+            "Calibrating storage devices...",
+            "Running system check...",
+            "Setting up environment variables...",
+            "Initializing control protocols...",
+            "Loading authentication services...",
+            "Verifying file integrity...",
+            "Running background services...",
+            "Establishing main process links...",
+            "Optimizing database connections...",
+            "Adjusting system parameters...",
+            "Running initial security checks...",
+            "Establishing connectivity...",
+            "Initializing security protocols...",
+            "Preparing monitoring tools...",
+            "Verifying access rights...",
+            "Launching virtual environments...",
+            "Scanning system memory...",
+            "Running system diagnostics...",
+            "Testing connection speeds...",
+            "Verifying backup integrity...",
+            "Finalizing system setup...",
+            "Setting up critical services...",
+            "Monitoring active processes...",
+            "Scanning user data...",
+            "Running final checks...",
+            "Clearing temporary files...",
+            "Loading security systems...",
+            "Configuring server settings...",
+            "Testing emergency response systems...",
+            "Validating data integrity...",
+            "Testing communication channels...",
+            "Launching monitoring software...",
+            "Running crash recovery tests...",
+            "Clearing system logs...",
+            "Testing connection reliability...",
+            "Launching final setup tasks...",
+            "Completing installation...",
+            "Optimizing system performance...",
+            "Configuring web server...",
+            "Testing system response times...",
+            "Performing error checks...",
+            "Clearing data caches...",
+            "Launching final tests...",
+            "Preparing system for user input...",
+            "Finalizing security checks...",
+            "Preparing data for final deployment...",
+            "Finalizing software settings...",
+            "Running security validation tests...",
+            "Running diagnostics on cloud systems...",
+            "Preparing for user login...",
+            "Launching emergency protocols...",
+            "Running verification scripts...",
+            "Running pre-launch verification...",
+            "Launching final system tests...",
+            "System ready for use..."
+        ].slice(0, 327))); // Ограничиваем массив до 327 строк
+    </script>
+</head>
+<body>
+    <!-- Анимация кода -->
+    <div id="code-animation"></div>
+
+    <!-- Сообщение об ошибке -->
+    <div id="error-message"></div>
+
+    <!-- Прогресс-бар -->
+    <div id="progress-percentage"></div>
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+</body>
+</html>
