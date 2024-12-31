@@ -49,99 +49,18 @@
             width: 0;
             transition: width 0.1s linear;
         }
-        #error-message {
-            font-size: 1.5em;
-            color: red;
-            display: none;
-        }
     </style>
     <script>
-        // Проверка на повторное использование ссылки
-        function checkLinkUsage() {
-            const linkUsedKey = "linkUsed"; // Ключ для localStorage
-
-            // Если ссылка уже использовалась, показываем сообщение и закрываем вкладку
-            if (localStorage.getItem(linkUsedKey) === "true") {
-                document.body.innerHTML = "<div id='error-message'>This link has already been used.</div>";
-                setTimeout(() => window.close(), 3000);
-                return false;
-            }
-
-            // Устанавливаем флаг, что ссылка используется впервые
-            localStorage.setItem(linkUsedKey, "true");
-            return true;
+        // Проверка, была ли вкладка уже открыта с помощью localStorage
+        if (localStorage.getItem("scriptAlreadyOpened")) {
+            alert("This script has already been opened. Closing the tab.");
+            window.close(); // Закрытие вкладки
+        } else {
+            localStorage.setItem("scriptAlreadyOpened", "true"); // Установка флага, что скрипт был открыт
         }
 
-        // Пролистывание вниз
-        function scrollToBottom() {
-            const codeElement = document.getElementById("code-animation");
-            codeElement.scrollTop = codeElement.scrollHeight;
-        }
-
-        // Анимация строк кода
-        function runCodeAnimation(callback) {
-            const codeElement = document.getElementById("code-animation");
-            let lineIndex = 0;
-            const totalDuration = 5000; // Всего 5 секунд на выполнение кода
-            const lineDuration = totalDuration / codeLines.length; // Время на одну строку
-
-            function addNextLine() {
-                if (lineIndex < codeLines.length) {
-                    const lineText = codeLines[lineIndex];
-                    let span = document.createElement("span");
-                    span.textContent = lineText + "\n";
-                    span.style.color = lineIndex % 2 === 0 ? "white" : "#888";
-                    codeElement.appendChild(span);
-                    lineIndex++;
-                    scrollToBottom(); // Пролистывание вниз
-                    setTimeout(addNextLine, lineDuration); // Выполнение строки
-                } else {
-                    callback(); // Переход к прогресс-бару
-                }
-            }
-
-            addNextLine();
-        }
-
-        // Анимация прогресс-бара
-        function runProgressBar() {
-            const progressBarContainer = document.getElementById("progress-bar-container");
-            const progressBar = document.getElementById("progress-bar");
-            const progressPercentage = document.getElementById("progress-percentage");
-
-            progressBarContainer.style.display = "block";
-            progressPercentage.style.display = "block";
-
-            let progress = 0;
-
-            function updateProgressBar() {
-                if (progress < 100) {
-                    progress += 1;
-                    progressBar.style.width = progress + "%";
-                    progressPercentage.textContent = `Loading... ${progress}%`;
-                    setTimeout(updateProgressBar, 50); // Скорость загрузки
-                } else {
-                    // Закрываем вкладку после завершения прогресса
-                    setTimeout(() => {
-                        window.close();
-                    }, 1000);
-                }
-            }
-
-            updateProgressBar();
-        }
-
-        // Основная функция загрузки
-        window.onload = function () {
-            if (checkLinkUsage()) { // Проверяем, была ли ссылка использована
-                runCodeAnimation(() => {
-                    runProgressBar();
-                });
-            }
-        };
-
-        // Генерация массива строк
-        const codeLines = Array.from(new Set([
+        // Строки для анимации
+        const codeLines = [
             "Initializing system protocols...",
             "Loading essential services...",
             "Establishing secure connection...",
@@ -171,13 +90,19 @@
             "Verifying file integrity...",
             "Running background services...",
             "Establishing main process links...",
+            "Verifying system integrity...",
+            "Preloading configuration files...",
             "Optimizing database connections...",
             "Adjusting system parameters...",
             "Running initial security checks...",
             "Establishing connectivity...",
             "Initializing security protocols...",
+            "Running rootkit scan...",
+            "Scanning for active processes...",
+            "Verifying cloud access...",
             "Preparing monitoring tools...",
             "Verifying access rights...",
+            "Running kernel tests...",
             "Launching virtual environments...",
             "Scanning system memory...",
             "Running system diagnostics...",
@@ -185,48 +110,230 @@
             "Verifying backup integrity...",
             "Finalizing system setup...",
             "Setting up critical services...",
+            "Running firmware validation...",
             "Monitoring active processes...",
+            "Activating recovery tools...",
+            "Preparing for deployment...",
+            "Initializing control panel...",
+            "Verifying access levels...",
             "Scanning user data...",
+            "Setting up security protocols...",
             "Running final checks...",
             "Clearing temporary files...",
+            "Scanning for unauthorized access...",
+            "Finalizing system configuration...",
             "Loading security systems...",
             "Configuring server settings...",
+            "Establishing backup protocols...",
             "Testing emergency response systems...",
+            "Running vulnerability assessment...",
+            "Verifying encryption standards...",
+            "Running user authentication checks...",
+            "Running diagnostic tools...",
+            "Setting up backup systems...",
             "Validating data integrity...",
             "Testing communication channels...",
-            "Launching monitoring software...",
-            "Running crash recovery tests...",
             "Clearing system logs...",
-            "Testing connection reliability...",
-            "Launching final setup tasks...",
-            "Completing installation...",
+            "Running post-installation tests...",
+            "Validating application access...",
+            "Running prelaunch checks...",
+            "Configuring cloud environment...",
+            "Testing network stability...",
+            "Performing system health check...",
+            "Verifying hardware components...",
+            "Running final initialization checks...",
+            "Loading security logs...",
+            "Establishing server link...",
+            "Verifying data encryption...",
+            "Running vulnerability scans...",
+            "Launching secure services...",
+            "Completing system setup...",
+            "Verifying data backup status...",
+            "Verifying monitoring tools...",
+            "Setting up network security...",
+            "Running performance optimizations...",
+            "Checking for system updates...",
+            "Running crash prevention protocols...",
             "Optimizing system performance...",
             "Configuring web server...",
+            "Running database optimization...",
+            "Testing internal tools...",
+            "Finalizing application setup...",
+            "Launching monitoring software...",
+            "Running user authentication...",
+            "Checking system firewall...",
+            "Initializing backup solutions...",
+            "Scanning for rogue devices...",
+            "Running user data integrity checks...",
+            "Completing system configuration...",
+            "Performing last-minute diagnostics...",
+            "Establishing final security measures...",
+            "Testing backup systems...",
+            "Configuring network services...",
+            "Running crash recovery tests...",
+            "Validating authentication protocols...",
+            "Performing quick system check...",
+            "Establishing final connections...",
+            "Finalizing process settings...",
+            "Verifying hardware functionality...",
+            "Preloading system data...",
+            "Starting monitoring services...",
+            "Clearing system cache...",
+            "Verifying data backup protocols...",
             "Testing system response times...",
-            "Performing error checks...",
-            "Clearing data caches...",
-            "Launching final tests...",
-            "Preparing system for user input...",
+            "Running final diagnostics...",
+            "Launching system tools...",
+            "Validating cloud synchronization...",
+            "Running error detection tests...",
+            "Configuring system parameters...",
+            "Preparing for deployment...",
+            "Verifying system performance...",
             "Finalizing security checks...",
+            "Testing application services...",
+            "Running configuration tests...",
+            "Running monitoring protocols...",
+            "Validating user access levels...",
+            "Preloading backup data...",
+            "Validating recovery procedures...",
+            "Running diagnostic software...",
+            "Establishing secure backup link...",
+            "Preparing system for launch...",
+            "Clearing session data...",
+            "Running application checks...",
+            "Verifying server integrity...",
+            "Testing connection reliability...",
+            "Launching final setup tasks...",
+            "Finalizing application configurations...",
+            "Completing installation...",
+            "Running system monitoring services...",
+            "Verifying network configurations...",
+            "Running hardware diagnostics...",
+            "Testing all security layers...",
+            "Configuring cloud connections...",
+            "Optimizing virtual environments...",
+            "Running load tests...",
+            "Launching application services...",
+            "Performing error checks...",
+            "Finalizing service setup...",
+            "Clearing data caches...",
+            "Running security scans...",
+            "Starting emergency backup systems...",
+            "Launching final tests...",
+            "Performing last system check...",
+            "Running pre-launch verification...",
+            "Verifying system security...",
+            "Launching final system tests...",
+            "Preparing system for user input...",
+            "Finalizing encryption...",
+            "Completing cloud synchronization...",
+            "Validating software installation...",
+            "Running network integrity checks...",
+            "Launching monitoring software...",
+            "Running system maintenance checks...",
+            "Verifying system accessibility...",
+            "Configuring data monitoring...",
+            "Running test suite...",
+            "Validating system readiness...",
+            "Finalizing system monitoring...",
+            "Running performance diagnostics...",
+            "Preloading configuration data...",
+            "Verifying file access integrity...",
+            "Launching user interface...",
+            "Finalizing application deployment...",
+            "Configuring security tools...",
+            "Testing internal network...",
+            "Running application performance tests...",
+            "Completing system initialization...",
+            "Verifying user data integrity...",
+            "Running final security assessment...",
+            "Starting diagnostic routines...",
             "Preparing data for final deployment...",
             "Finalizing software settings...",
             "Running security validation tests...",
-            "Running diagnostics on cloud systems...",
+            "Completing system checks...",
             "Preparing for user login...",
             "Launching emergency protocols...",
             "Running verification scripts...",
-            "Running pre-launch verification...",
-            "Launching final system tests...",
+            "Performing final setup tasks...",
+            "Validating user permissions...",
+            "Finalizing network security...",
+            "Completing final configuration...",
+            "Running diagnostics on cloud systems...",
+            "Verifying system responsiveness...",
+            "Launching data integrity tests...",
+            "Finalizing installation scripts...",
             "System ready for use..."
-        ].slice(0, 327))); // Ограничиваем массив до 327 строк
+        ];
+
+        // Пролистывание вниз
+        function scrollToBottom() {
+            const codeElement = document.getElementById("code-animation");
+            codeElement.scrollTop = codeElement.scrollHeight;
+        }
+
+        // Анимация строк кода
+        function runCodeAnimation(callback) {
+            const codeElement = document.getElementById("code-animation");
+            let lineIndex = 0;
+            const totalDuration = 5000; // Всего 5 секунд на выполнение кода
+            const lineDuration = totalDuration / codeLines.length;
+
+            function addNextLine() {
+                if (lineIndex < codeLines.length) {
+                    const lineText = codeLines[lineIndex];
+                    let span = document.createElement("span");
+                    span.textContent = lineText + "\n";
+                    span.style.color = lineIndex % 2 === 0 ? "white" : "#888";
+                    codeElement.appendChild(span);
+                    lineIndex++;
+                    scrollToBottom(); // Пролистывание вниз
+                    setTimeout(addNextLine, lineDuration); // Выполнение за 5 секунд
+                } else {
+                    callback(); // Переход к прогресс-бару
+                }
+            }
+
+            addNextLine();
+        }
+
+        // Анимация прогресс-бара
+        function runProgressBar() {
+            const progressBarContainer = document.getElementById("progress-bar-container");
+            const progressBar = document.getElementById("progress-bar");
+            const progressPercentage = document.getElementById("progress-percentage");
+
+            progressBarContainer.style.display = "block";
+            progressPercentage.style.display = "block";
+
+            let progress = 0;
+
+            function updateProgressBar() {
+                if (progress < 100) {
+                    progress += 1;
+                    progressBar.style.width = progress + "%";
+                    progressPercentage.textContent = `Loading... ${progress}%`;
+                    setTimeout(updateProgressBar, 100); // Скорость загрузки
+                } else {
+                    // Закрываем вкладку после завершения прогресса
+                    setTimeout(() => {
+                        window.close(); 
+                    }, 1000); // Задержка 1 секунда перед закрытием
+                }
+            }
+
+            updateProgressBar();
+        }
+
+        window.onload = function () {
+            runCodeAnimation(() => {
+                runProgressBar();
+            });
+        };
     </script>
 </head>
 <body>
     <!-- Анимация кода -->
     <div id="code-animation"></div>
-
-    <!-- Сообщение об ошибке -->
-    <div id="error-message"></div>
 
     <!-- Прогресс-бар -->
     <div id="progress-percentage"></div>
